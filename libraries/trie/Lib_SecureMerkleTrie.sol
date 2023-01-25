@@ -27,11 +27,10 @@ library Lib_SecureMerkleTrie {
     function verifyInclusionProof(
         bytes memory _key,
         bytes memory _value,
-        bytes memory _proof,
+        bytes[] memory _proof,
         bytes32 _root
     ) internal pure returns (bool _verified) {
-        bytes memory key = _getSecureKey(_key);
-        return Lib_MerkleTrie.verifyInclusionProof(key, _value, _proof, _root);
+        return Lib_MerkleTrie.verifyInclusionProof(_key, _value, _proof, _root);
     }
 
     /**
@@ -44,11 +43,10 @@ library Lib_SecureMerkleTrie {
      */
     function get(
         bytes memory _key,
-        bytes memory _proof,
+        bytes[] memory _proof,
         bytes32 _root
     ) internal pure returns (bool _exists, bytes memory _value) {
-        bytes memory key = _getSecureKey(_key);
-        return Lib_MerkleTrie.get(key, _proof, _root);
+        return Lib_MerkleTrie.get(_key, _proof, _root);
     }
 
     /*********************

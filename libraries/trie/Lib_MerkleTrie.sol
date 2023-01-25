@@ -68,7 +68,7 @@ library Lib_MerkleTrie {
     function verifyInclusionProof(
         bytes memory _key,
         bytes memory _value,
-        bytes memory _proof,
+        bytes[] memory _proof,
         bytes32 _root
     ) internal pure returns (bool _verified) {
         (bool exists, bytes memory value) = get(_key, _proof, _root);
@@ -86,7 +86,7 @@ library Lib_MerkleTrie {
      */
     function get(
         bytes memory _key,
-        bytes memory _proof,
+        bytes[] memory _proof,
         bytes32 _root
     ) internal pure returns (bool _exists, bytes memory _value) {
         TrieNode[] memory proof = _parseProof(_proof);
@@ -232,12 +232,11 @@ library Lib_MerkleTrie {
      * @param _proof RLP-encoded proof to parse.
      * @return _parsed Proof parsed into easily accessible structs.
      */
-    function _parseProof(bytes memory _proof) private pure returns (TrieNode[] memory _parsed) {
-        Lib_RLPReader.RLPItem[] memory nodes = Lib_RLPReader.readList(_proof);
-        TrieNode[] memory proof = new TrieNode[](nodes.length);
+    function _parseProof(bytes[] memory _proof) private pure returns (TrieNode[] memory _parsed) {
+        TrieNode[] memory proof = new TrieNode[](_proof.length);
 
-        for (uint256 i = 0; i < nodes.length; i++) {
-            bytes memory encoded = Lib_RLPReader.readBytes(nodes[i]);
+        for (uint256 i = 0; i < _proof.length; i++) {
+            bytes memory encoded = _proof[i];
             proof[i] = TrieNode({ encoded: encoded, decoded: Lib_RLPReader.readList(encoded) });
         }
 
